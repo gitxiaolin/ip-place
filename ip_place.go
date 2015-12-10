@@ -67,7 +67,7 @@ func SearchStartIndex(n int, f func(int) bool) int {
 
 //加载IP数据到内存
 func LoadIPData() error {
-	return ReadStringLine("IP_Location.txt", processIPLine)
+	return ReadStringLine("IP_Library.txt", processIPLine)
 }
 func ReadStringLine(filePth string, hookfn func(string)) error {
 	f, err := os.Open(filePth)

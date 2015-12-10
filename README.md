@@ -6,13 +6,13 @@ go get github.com/gitxiaolin/ip_place
 # example 
 package main
 
-import {
+import (
 
   "github.com/gitxiaolin/ip_place"
   
   "fmt"
   
-}
+)
 
 func main(){
 

@@ -12,7 +12,6 @@ import (
 
 type IPRange struct {
 	End          int64
-	CityId       int64
 	CityName     string
 	ProvinceName string
 	Mark         int
@@ -67,7 +66,7 @@ func SearchStartIndex(n int, f func(int) bool) int {
 
 //加载IP数据到内存
 func LoadIPData() error {
-	return ReadStringLine("IP_Library.txt", processIPLine)
+	return ReadStringLine("IP_Location.txt", processIPLine)
 }
 func ReadStringLine(filePth string, hookfn func(string)) error {
 	f, err := os.Open(filePth)
@@ -81,6 +80,9 @@ func ReadStringLine(filePth string, hookfn func(string)) error {
 		line, err := bfRd.ReadString('\n')
 		hookfn(line)
 		if err != nil {
+			if err == io.EOF {
+				return nil
+			}
 			return err
 		}
 	}
@@ -101,21 +103,19 @@ func processIPLine(line string) {
 	if err != nil {
 		panic(fmt.Sprintf("解析EndIP错误,index:%d,line:%s", lineIndex, line))
 	}
-	var cityId int64
+
 	if strings.EqualFold(arr[3], "-") {
 		if strings.EqualFold(arr[2], "-") {
-			cityId = 0
-			IPMap[ip_start] = &IPRange{End: ip_end, CityId: cityId, Mark: 2}
+			IPMap[ip_start] = &IPRange{End: ip_end, Mark: 2}
 		} else {
-			cityId = GetCodeByAreaName(arr[2])
 			provincename := arr[2]
-			IPMap[ip_start] = &IPRange{End: ip_end, CityId: cityId, ProvinceName: provincename, Mark: 1}
+			IPMap[ip_start] = &IPRange{End: ip_end, ProvinceName: provincename, Mark: 1}
 		}
 	} else {
-		cityId := GetCodeByAreaName(arr[3])
+
 		cityname := arr[3]
 		provincename := arr[2]
-		IPMap[ip_start] = &IPRange{End: ip_end, CityId: cityId, CityName: cityname, ProvinceName: provincename, Mark: 0}
+		IPMap[ip_start] = &IPRange{End: ip_end, CityName: cityname, ProvinceName: provincename, Mark: 0}
 	}
 
 	IPSlice[lineIndex] = ip_start

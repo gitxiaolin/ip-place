@@ -81,6 +81,9 @@ func ReadStringLine(filePth string, hookfn func(string)) error {
 		line, err := bfRd.ReadString('\n')
 		hookfn(line)
 		if err != nil {
+			if err == io.EOF{
+				return nil
+			}
 			return err
 		}
 	}
